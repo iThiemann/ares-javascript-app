@@ -1,0 +1,49 @@
+
+version: 2
+updates:
+  # ============================================================
+  # 1) npm Dependencies für deine JS/NestJS-App
+  # ============================================================
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "npm"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "npm"
+    reviewers:
+      - "NAMESPACE"   # OPTIONAL → GitHub Username eintragen
+    allow:
+      - dependency-type: "all"
+
+  # ============================================================
+  # 2) GitHub Actions Workflow Updates
+  # ============================================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "github-actions"
+      - "dependencies"
+    reviewers:
+      - "NAMESPACE"
+
+  # ============================================================
+  # 3) Dockerfile Updates
+  #    → z. B. node:20 → node:20.5 → node:21
+  # ============================================================
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "docker"
+      - "dependencies"
+    reviewers:
+      - "NAMESPACE"
+    open-pull-requests-limit: 5
