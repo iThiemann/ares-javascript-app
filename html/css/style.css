@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+p {
+    font-size: 35px;
+    color: #1c1c5c;
+    ;
+    font-weight: bold;
+    text-align: center;
+}
+
+a {
+    display: block;
+    margin-top: 12px;
+    text-align: center;
+    background-color: rgb(5, 115, 249);
+    color: white;
+    padding: 0.8em 5em;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 15px;
+
+}
+
+a:hover {
+    background-color: #04113e;
+}
+
+a:active {
+    background-color: rgb(8, 222, 245);
+}
+
+img {
+    max-width: 12%;
+}
