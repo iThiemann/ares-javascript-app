@@ -64,3 +64,16 @@ npm run start:prod
 
 App is Provided as is, without warranty of any kind
 Nest is [MIT licensed](LICENSE).
+
+# How to start stacks in stages
+Dev
+docker compose -f docker-compose.dev.yml up -d
+
+Staging
+docker compose -f docker-compose.staging.yml pull
+docker compose -f docker-compose.staging.yml up -d
+
+Prod
+docker compose -f docker-compose.prod.yml pull
+docker compose -f docker-compose.prod.yml up -d
+

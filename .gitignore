@@ -1,0 +1,57 @@
+
+# ============================
+# Environment Files (Secrets)
+# ============================
+.env
+.env.*
+*.env
+
+# ============================
+# Node.js
+# ============================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.lck
+
+# ============================
+# Build Output
+# ============================
+dist/
+build/
+tmp/
+temp/
+
+# ============================
+# Logs
+# ============================
+logs/
+*.log
+*.log.*
+debug.log
+
+# ============================
+# Docker
+# ============================
+docker-compose.override.yml
+docker-compose.dev.yml.local
+.docker/
+docker-data/
+docker-volume/
+
+# ============================
+# System / IDE Files
+# ============================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# VSCode
+.vscode/
+.history/
+
+# JetBrains
+.idea/

@@ -1,0 +1,79 @@
+# Trigger: push auf Tags v*.*.*
+# Aufgabe: Image von Staging-Tag auf Release-Tag „promoten“ + Prod-Deploy
+# (kein Rebuild, nur retag & deploy)
+
+name: Release to Production
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  promote-image:
+    runs-on: ubuntu-latest
+
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/javascript-app
+
+    outputs:
+      version_tag: ${{ steps.version.outputs.version_tag }}
+
+    steps:
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG_REF=${GITHUB_REF#refs/tags/}
+          echo "version_tag=${TAG_REF}" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull staging image
+        run: |
+          docker pull ${{ env.IMAGE_NAME }}:staging
+
+      - name: Tag image for production
+        run: |
+          docker tag ${{ env.IMAGE_NAME }}:staging ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version_tag }}
+          docker tag ${{ env.IMAGE_NAME }}:staging ${{ env.IMAGE_NAME }}:prod
+
+      - name: Push production tags
+        run: |
+          docker push ${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version_tag }}
+          docker push ${{ env.IMAGE_NAME }}:prod
+
+  deploy-prod:
+    needs: promote-image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Production via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROD_SSH_HOST }}
+          username: ${{ secrets.PROD_SSH_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            cd ${{ secrets.PROD_PROJECT_PATH }}
+
+            docker login ${{ env.REGISTRY }} \
+              -u "${{ github.actor }}" \
+              -p "${{ secrets.GITHUB_TOKEN }}"
+
+            # env.prod -> .env
+            cp .env.prod .env
+
+            docker compose pull
+            # DB-Migration vor dem Traffic-Shift (Beispiel)
+            docker compose run --rm app npm run migrate
+
+            docker compose up -d
+
+            # Post-Deploy Smoke Test
+            curl -f http://localhost:3000/health || exit 1
