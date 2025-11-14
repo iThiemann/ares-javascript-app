@@ -12,14 +12,17 @@ services:
     restart: always
 
   db:
-    image: mysql:8.0.21
-    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    #image: mysql:8.4.0
+    #platform: linux/amd64
     container_name: javascript-app-mysql
     env_file:
       - .env
     ports:
       - "3306:3306"
-    command: --pid-file /var/lib/mysql/mysqld.pid
+    command: --pid-file /var/run/mysql/mysqld.pid
     volumes:
       - mysql_data:/var/lib/mysql
     restart: always

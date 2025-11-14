@@ -1,0 +1,14 @@
+
+FROM mysql:8.4.0
+
+# Install tzdata so /usr/share/zoneinfo is populated.
+# Depending on the base, use the right package manager.
+
+# For Debian/Ubuntu-based images:
+# RUN apt-get update && \
+#     apt-get install -y tzdata && \
+#     rm -rf /var/lib/apt/lists/*
+
+# If this fails with "apt-get: command not found", your image is RPM-based.
+# Then use something like:
+ RUN microdnf install -y tzdata && microdnf clean all
