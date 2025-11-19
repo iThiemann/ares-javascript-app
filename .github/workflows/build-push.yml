@@ -31,11 +31,11 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ghcr.io/${{ github.repository_owner }}/ares-javascript-app:dev .
+        docker build -t ghcr.io/ithiemann/ares-javascript-app:dev .
 
     - name: Push Docker image
       run: |
-        docker push ghcr.io/${{ github.repository_owner }}/ares-javascript-app:dev
+        docker push ghcr.io/ithiemann/ares-javascript-app:dev
 
     - name: Export image tag
       id: meta
