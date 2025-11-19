@@ -41,9 +41,7 @@ spec:
                   key: DB_PASSWORD
           ports:
             - containerPort: 3306
-          args:
-            - "--default-authentication-plugin=mysql_native_password"
-          volumeMounts:
+        volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
 
