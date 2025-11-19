@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +17,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: {{ .Values.mysql.image }}
+          image: {{ .Values.mysql.image }}        # mysql:8.4.6
           imagePullPolicy: IfNotPresent
           env:
             - name: MYSQL_ROOT_PASSWORD
@@ -41,13 +42,10 @@ spec:
                   key: DB_PASSWORD
           ports:
             - containerPort: 3306
-        volumeMounts:
+          volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
-
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-data
-
-
