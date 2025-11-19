@@ -1,0 +1,26 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ares-app
+  labels:
+    app: ares-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ares-app
+  template:
+    metadata:
+      labels:
+        app: ares-app
+    spec:
+      containers:
+        - name: ares-app
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          envFrom:
+            - secretRef:
+                name: ares-db-credentials

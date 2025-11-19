@@ -1,0 +1,20 @@
+
+image:
+  repository: ghcr.io/ithiemann/ares-javascript-app
+  tag: dev
+  pullPolicy: Always
+
+mysql:
+  image: mysql:8.4.6
+  rootPassword: root-super-secret        # CHANGE ME
+  dbUser: aresuser                       # CHANGE ME
+  dbPassword: aresuser-super-secret      # CHANGE ME
+  dbName: aresdb                         # CHANGE ME
+
+app:
+  port: 3000
+  dbLess: "no"
+
+service:
+  type: ClusterIP
+  port: 3000
