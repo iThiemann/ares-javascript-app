@@ -29,9 +29,15 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Set image name
+      id: image
+      run: |
+        OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+        echo "image=ghcr.io/$OWNER/ares-javascript-app:dev" >> $GITHUB_OUTPUT
+
     - name: Build Docker image
       run: |
-        docker build -t ghcr.io/ithiemann/ares-javascript-app:dev .
+        docker build -t ${{ steps.image.outputs.image }} .
 
     - name: Push Docker image
       run: |
