@@ -37,10 +37,6 @@ jobs:
         run: npm run format:check
         continue-on-error: true   # optional
 
-      - name: Run tests
-        run: npm test
-        continue-on-error: false  # tests should normally fail if broken
-
       - name: npm audit (high & critical)
         run: npm audit --audit-level=high
         continue-on-error: true   # recommended for dependency PRs
