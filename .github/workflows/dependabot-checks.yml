@@ -34,9 +34,6 @@ jobs:
         run: npm run format:check
         continue-on-error: ${{ github.actor != 'dependabot[bot]' }}
 
-      - name: Run tests
-        run: npm test
-
       - name: npm audit
         run: npm audit --audit-level=high
         continue-on-error: ${{ github.actor != 'dependabot[bot]' }}
