@@ -1,0 +1,26 @@
+
+# deploy/helm/nomad-dev/nomad-service.yaml
+# Exposes the Nomad HTTP API/UI via a NodePort service.
+# You can:
+#   - use `kubectl port-forward svc/nomad-ui 4646:4646` (recommended for kind), or
+#   - access via the NodePort on the kind node IP (e.g. 127.0.0.1:30646 depending on your Docker setup).
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nomad-ui
+  namespace: nomad
+  labels:
+    app: nomad
+spec:
+  # NodePort as requested (instead of ClusterIP)
+  type: NodePort
+  selector:
+    app: nomad
+    component: dev-agent
+  ports:
+    - name: http
+      port: 4646          # Service port inside the cluster
+      targetPort: 4646    # Container port in the Nomad pod
+      protocol: TCP
+      nodePort: 30646     # NodePort (must be in 30000-32767). Adjust if you like.

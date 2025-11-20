@@ -1,0 +1,11 @@
+
+# deploy/helm/nomad-dev/namespace.yaml
+# Nomad dev namespace; ArgoCD will manage this via the Application.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nomad
+  labels:
+    app: nomad
+    environment: dev

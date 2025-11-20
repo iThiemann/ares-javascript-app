@@ -1,0 +1,19 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nomad-dev-config
+  namespace: nomad
+data:
+  server-only.hcl: |
+    datacenter = "dc1"
+    data_dir   = "/nomad/data"
+
+    server {
+      enabled          = true
+      bootstrap_expect = 1
+    }
+
+    client {
+      enabled = false
+    }

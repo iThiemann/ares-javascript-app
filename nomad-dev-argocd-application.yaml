@@ -1,0 +1,32 @@
+
+# nomad-dev-argocd-application.yaml
+# ArgoCD Application to deploy Nomad dev agent from deploy/helm/nomad-dev/
+# using plain YAML (no Helm here, despite the folder name).
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nomad-dev
+  namespace: argocd                  # ArgoCD's own namespace
+spec:
+  project: default
+
+  # Where to deploy the resources
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nomad                 # Target namespace for Nomad
+
+  # Where the manifests live in Git
+  source:
+    repoURL: https://github.com/ithiemann/ares-javascript-app.git
+    targetRevision: develop # or 'master', or a feature branch
+    path: deploy/helm/nomad-dev      # <- this is what you requested
+
+  syncPolicy:
+    automated:
+      prune: true                    # Remove resources if they are deleted from Git
+      selfHeal: true                 # Reapply if someone changes them manually
+    syncOptions:
+      - CreateNamespace=true         # Create 'nomad' namespace if missing
+      # Uncomment if you later hit immutable field issues and want delete+recreate behavior:
+      - Replace=true

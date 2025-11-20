@@ -1,0 +1,17 @@
+
+spec:
+  template:
+    spec:
+      containers:
+        - name: nomad
+          image: hashicorp/nomad:1.11.0
+          args:
+            - "agent"
+            - "-config=/etc/nomad/server-only.hcl"
+          volumeMounts:
+            - name: nomad-config
+              mountPath: /etc/nomad
+      volumes:
+        - name: nomad-config
+          configMap:
+            name: nomad-dev-config

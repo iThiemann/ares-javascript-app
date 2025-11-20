@@ -260,4 +260,51 @@ kubectl -n vault port-forward svc/vault-ui 8200:8200
 
 http://localhost:8200
 
+# Nomad setup
+```
+# Apply the ArgoCD Application definition
+kubectl apply -f nomad-dev-argocd-application.yaml
 
+# Check ArgoCD sees it
+argocd app list
+argocd app get nomad-dev
+# Trigger the first sync
+argocd app sync nomad-dev
+
+# Inspect status
+argocd app get nomad-dev
+
+# Check resources in the 'nomad' namespace
+kubectl -n nomad get pods
+kubectl -n nomad get svc
+
+# Port-forward the Nomad UI service port 4646 → localhost:4646
+kubectl -n nomad port-forward svc/nomad-ui 4646:4646
+
+http://localhost:4646
+```
+
+# To test first without ArgoCD
+```
+# 2.4.1 – Apply manifests locally (bypassing ArgoCD, just for a quick check)
+kubectl apply -f k8s/nomad-dev/namespace.yaml
+kubectl apply -f k8s/nomad-dev/nomad-deployment.yaml
+kubectl apply -f k8s/nomad-dev/nomad-service.yaml
+
+# 2.4.2 – Check pods & service
+kubectl -n nomad get pods
+kubectl -n nomad get svc
+You should see nomad-dev-xxxxx and nomad-ui.
+
+Access UI via port-forward:
+
+bash
+Copy code
+kubectl -n nomad port-forward svc/nomad-ui 4646:4646
+# → then open http://localhost:4646
+If that works, delete them again so ArgoCD can own them later:
+
+bash
+Copy code
+kubectl delete namespace nomad
+```

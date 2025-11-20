@@ -1,0 +1,76 @@
+
+# deploy/helm/nomad-dev/nomad-deployment.yaml
+# Single Nomad agent running in -dev mode (server + client + UI) in one pod.
+# This is for development only. Do NOT use -dev in production.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nomad-dev
+  namespace: nomad
+  labels:
+    app: nomad
+    component: dev-agent
+spec:
+  # One replica is enough for dev; it's a self-contained Nomad dev agent.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nomad
+      component: dev-agent
+  template:
+    metadata:
+      labels:
+        app: nomad
+        component: dev-agent
+    spec:
+      containers:
+        - name: nomad
+          # Uses the latest Nomad image (dev only). For stability, pin a version (e.g. 1.8.x).
+          image: hashicorp/nomad:1.11.0
+          imagePullPolicy: IfNotPresent
+          args:
+            # Run a Nomad agent in dev mode:
+            # - single binary does server+client+UI
+            # - state is in-memory
+            - "agent"
+            - "-dev"
+            # Bind to all interfaces so Service/port-forward can reach it
+            - "-bind=0.0.0.0"
+            # Reasonable default log level
+            - "-log-level=INFO"
+          ports:
+            # HTTP API & UI (default Nomad port)
+            - name: http
+              containerPort: 4646
+            # RPC port (server<->client communication)
+            - name: rpc
+              containerPort: 4647
+            # Serf gossip port
+            - name: serf
+              containerPort: 4648
+          readinessProbe:
+            # Simple readiness check against Nomad HTTP API:
+            httpGet:
+              path: /v1/status/leader
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            # Liveness probe uses the same endpoint;
+            # if it fails repeatedly, Kubernetes restarts the pod.
+            httpGet:
+              path: /v1/status/leader
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 6
+          resources:
+            # Conservative resource requests/limits suitable for kind on a laptop.
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
