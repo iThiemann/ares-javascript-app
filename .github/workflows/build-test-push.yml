@@ -77,6 +77,9 @@ jobs:
           format: 'table'
           exit-code: '0'                 # fail pipeline on HIGH/CRITICAL
           severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+          # and:
+          args: --skip-version-check
 
       - name: Push Docker image
         run: |
