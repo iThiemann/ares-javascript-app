@@ -12,5 +12,5 @@ spec:
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.app.port }}
-      nodePort: {{.Values.nodePort.port}}
+      nodePort: 30080
       protocol: TCP
