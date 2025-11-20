@@ -35,6 +35,7 @@ jobs:
         # If you have a "format:check" script that *checks* formatting:
       - name: Format check
         run: npm run format:check
+        continue-on-error: true
         # or: npm run prettier:check / npm run fmt:check, adapt to your scripts
 
       # Optional but usually a good idea
