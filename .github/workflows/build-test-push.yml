@@ -44,7 +44,7 @@ jobs:
         # or: npm run test:unit / npm run test:ci, adapt to your repo
 
       - name: npm audit
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=critical
         # You can relax the level (low/moderate) or add `|| true` if you only want warnings
       # To address issues that do not require attention, run:
       - name: npm audit fix 
