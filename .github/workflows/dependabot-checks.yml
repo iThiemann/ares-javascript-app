@@ -3,17 +3,14 @@ name: Dependabot Checks
 
 on:
   push:
-    branches:
-      - "**"     # run on ALL branches
+    branches: [ "**" ]
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
 
 jobs:
-  dependabot-ci:
-    name: Quality Checks
+  checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,12 +28,15 @@ jobs:
 
       - name: Lint
         run: npm run lint
-        continue-on-error: true   # optional
+        continue-on-error: ${{ github.actor != 'dependabot[bot]' }}
 
       - name: Format check
         run: npm run format:check
-        continue-on-error: true   # optional
+        continue-on-error: ${{ github.actor != 'dependabot[bot]' }}
 
-      - name: npm audit (high & critical)
+      - name: Run tests
+        run: npm test
+
+      - name: npm audit
         run: npm audit --audit-level=high
-        continue-on-error: true   # recommended for dependency PRs
+        continue-on-error: ${{ github.actor != 'dependabot[bot]' }}
