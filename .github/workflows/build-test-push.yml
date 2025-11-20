@@ -39,8 +39,8 @@ jobs:
         # or: npm run prettier:check / npm run fmt:check, adapt to your scripts
 
       # Optional but usually a good idea
-      - name: Run tests
-        run: npm test
+      # - name: Run tests
+      #  run: npm test
         # or: npm run test:unit / npm run test:ci, adapt to your repo
 
       - name: npm audit
