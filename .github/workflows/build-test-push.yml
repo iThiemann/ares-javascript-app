@@ -45,14 +45,8 @@ jobs:
 
       - name: npm audit
         run: npm audit --audit-level=critical
-        # You can relax the level (low/moderate) or add `|| true` if you only want warnings
-      # To address issues that do not require attention, run:
-      - name: npm audit fix 
-        run: npm audit fix 
         continue-on-error: true
-      # To address all issues (including breaking changes), run:
-      # - name: npm audit fix 
-      #   run: npm audit fix --force
+        # You can relax the level (low/moderate) or add `|| true` if you only want warnings
 
       # --- Docker & GHCR ---
 
