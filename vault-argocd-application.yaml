@@ -10,18 +10,21 @@ spec:
   source:
     repoURL: https://helm.releases.hashicorp.com
     chart: vault
-    targetRevision: 0.30.0      # or ">=0.30.0" or omit for latest, but pinning is safer
+    targetRevision: 0.31.0      # or ">=0.30.0" or omit for latest, but pinning is safer
     helm:
       values: |
         global:
           tlsDisable: true        # for lab/dev only, enable TLS in real setups
-
+        
+        injector:
+          enabled: false   
+        
         ui:
           enabled: true
           #serviceType: LoadBalancer
           # For bare-metal / kind, use NodePort instead:
           serviceType: NodePort
-
+          nodePort: 32000
         server:
           # For dev/lab. For production you usually want HA + persistent storage.
           standalone:
@@ -30,15 +33,15 @@ spec:
             enabled: false
 
           dataStorage:
-            enabled: true
-            size: 10Gi
-            storageClass: ""       # set your storageClass if needed
+            enabled: false
+            #size: 10Gi
+            #storageClass: ""       # set your storageClass if needed
 
           # Example resource limits (tune as needed)
           resources:
             requests:
-              cpu: "100m"
-              memory: "256Mi"
+              cpu: "50m"
+              memory: "128Mi"
             limits:
               cpu: "500m"
               memory: "512Mi"
