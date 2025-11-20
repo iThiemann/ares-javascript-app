@@ -66,16 +66,18 @@ App is Provided as is, without warranty of any kind
 Nest is [MIT licensed](LICENSE).
 
 # How to start stacks in stages
-Dev
+```
+# Dev
 docker compose -f docker-compose.dev.yml up -d
 
-Staging
+# Staging
 docker compose -f docker-compose.staging.yml pull
 docker compose -f docker-compose.staging.yml up -d
 
-Prod
+# Prod 
 docker compose -f docker-compose.prod.yml pull
 docker compose -f docker-compose.prod.yml up -d
+```
 
 
 # ares-javascript-app-terraform
@@ -104,8 +106,6 @@ kubectl version --client
 terraform init
 terraform plan
 terraform apply
-```
-```
 terraform output -raw kubeconfig > kubeconfig-kind
 ```
 # Backup existing config (if any)
@@ -131,10 +131,8 @@ kind get clusters
 kind get kubeconfig --name dev-cluster > kubeconfig-kind
 export KUBECONFIG=$PWD/kubeconfig-kind
 kubectl get nodes
-```
 
-When you’re done:
-```
+# When you’re done:
 terraform destroy
 ```
 
@@ -150,10 +148,8 @@ You must install ArgoCD into your local kind cluster:
 kubectl create namespace argocd
 kubectl apply -n argocd \
   -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-```
 
-Expose ArgoCD UI:
-```
+# Expose ArgoCD UI:
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
