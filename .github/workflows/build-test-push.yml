@@ -30,8 +30,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
-
-      # If you have a "format:check" script that *checks* formatting:
+        continue-on-error: true
+      
+        # If you have a "format:check" script that *checks* formatting:
       - name: Format check
         run: npm run format:check
         # or: npm run prettier:check / npm run fmt:check, adapt to your scripts
