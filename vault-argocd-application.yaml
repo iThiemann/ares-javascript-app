@@ -1,0 +1,55 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault
+  namespace: argocd        # ArgoCD control-plane namespace
+spec:
+  project: default
+
+  source:
+    repoURL: https://helm.releases.hashicorp.com
+    chart: vault
+    targetRevision: 0.30.0      # or ">=0.30.0" or omit for latest, but pinning is safer
+    helm:
+      values: |
+        global:
+          tlsDisable: true        # for lab/dev only, enable TLS in real setups
+
+        ui:
+          enabled: true
+          #serviceType: LoadBalancer
+          # For bare-metal / kind, use NodePort instead:
+          serviceType: NodePort
+
+        server:
+          # For dev/lab. For production you usually want HA + persistent storage.
+          standalone:
+            enabled: true
+          ha:
+            enabled: false
+
+          dataStorage:
+            enabled: true
+            size: 10Gi
+            storageClass: ""       # set your storageClass if needed
+
+          # Example resource limits (tune as needed)
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: vault
+
+  syncPolicy:
+    automated:
+      prune: true        # delete resources that are removed from Helm
+      selfHeal: true     # re-sync if someone changes things manually
+    syncOptions:
+      - CreateNamespace=true
