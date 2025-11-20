@@ -1,0 +1,30 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nomad-config
+  namespace: nomad
+  labels:
+    app: nomad
+data:
+  server.hcl: |
+    datacenter = "dc1"
+    data_dir   = "/nomad/data"
+    log_level  = "INFO"
+    bind_addr  = "0.0.0.0"
+
+    server {
+      enabled          = true
+      bootstrap_expect = 1
+    }
+
+    # Hard-disable client explicitly, just in case
+    client {
+      enabled = false
+    }
+
+    advertise {
+      http = "0.0.0.0:4646"
+      rpc  = "0.0.0.0:4647"
+      serf = "0.0.0.0:4648"
+    }

@@ -29,10 +29,9 @@ spec:
           # IMPORTANT: server-only dev mode to avoid client/cgroup inside container
           args:
             - "agent"
-            - "-dev"
-            - "-bind=0.0.0.0"
+            - "-config=/etc/nomad.d/server.hcl"
             - "-server"
-            - "-bootstrap-expect=1"
+            - "-client=false"      # hard-disable client via flag too
 
           ports:
             - name: http
@@ -42,6 +41,13 @@ spec:
             - name: serf
               containerPort: 4648
 
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nomad.d
+              readOnly: true
+            - name: data
+              mountPath: /nomad/data
+
           # No probes yet; add once it's stable
           resources:
             requests:
@@ -50,3 +56,10 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
+      volumes:
+        - name: config
+          configMap:
+            name: nomad-config
+        - name: data
+          emptyDir: {}
