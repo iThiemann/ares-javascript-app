@@ -100,6 +100,10 @@ brew install docker-desktop
 docker ps
 kind --version
 kubectl version --client
+kind create cluster --name dev-cluster
+kubectl config get-contexts
+kubectl config use-context kind-dev-cluster
+kubectl get nodes
 ```
 
 ```
