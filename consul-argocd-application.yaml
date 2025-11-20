@@ -1,0 +1,62 @@
+
+# consul-argocd-application.yaml
+# This ArgoCD Application installs HashiCorp Consul via the official Helm chart
+# into a 'consul' namespace on your kind cluster.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: consul
+  namespace: argocd              # ArgoCD control-plane namespace
+spec:
+  project: default
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: consul            # Consul will be installed into this namespace
+
+  source:
+    # Official HashiCorp Helm repo for Consul
+    repoURL: https://helm.releases.hashicorp.com
+    chart: consul
+    # Pin to a known chart version; update as needed (check 'helm search repo hashicorp/consul')
+    targetRevision: "1.8.4"
+
+    helm:
+      # Inline Helm values – equivalent to a values.yaml, but managed by ArgoCD
+      values: |
+        # ---- Global settings (affect whole Consul deployment) ----
+        global:
+          enabled: true             # enable all core components
+          name: consul              # prefix for resource names
+          datacenter: dc1           # logical Consul DC name
+
+          tls:
+            enabled: false          # enable TLS for Consul (kind guide default)
+          acls:
+            manageSystemACLs: false # automatically manage system ACLs
+
+        # ---- Server settings ----
+        server:
+          enabled: true
+          replicas: 1               # single server for dev/kind
+          bootstrapExpect: 1        # must match replicas
+
+        # ---- UI settings ----
+        ui:
+          enabled: true
+          service:
+            # For kind, NodePort is convenient – we will port-forward later
+            type: NodePort
+
+        # ---- Optional: disable connectInject/service mesh for now (simpler demo) ----
+        connectInject:
+          enabled: false
+
+  syncPolicy:
+    automated:
+      prune: true                   # delete resources removed from chart
+      selfHeal: true                # re-sync when drift detected
+    syncOptions:
+      - CreateNamespace=true        # create 'consul' namespace if missing
+      - Replace=true                # allow delete/recreate of immutable resources (safe for dev)

@@ -223,3 +223,41 @@ kubectl get pods -n ingress-nginx
 Expected output:
 ingress-nginx-controller-xxxxx   1/1   Running
 
+
+
+# Consul setup 
+```
+kubectl apply -f consul-argocd-application.yaml
+# Make sure no sync operation is "in progress"
+argocd app terminate-op consul || true
+
+# Trigger a fresh sync
+argocd app sync consul
+
+# Check status
+argocd app get consul
+
+# Check what actually got created
+kubectl -n consul get pods
+kubectl -n consul get svc
+kubectl -n consul get role,rolebinding
+kubectl -n consul port-forward svc/consul-ui 8500:80
+```
+
+http://localhost:8500
+
+
+# Vault setup
+```
+kubectl apply -f vault-argocd-application.yaml
+argocd app terminate-op vault || true
+argocd app get vault
+argocd app sync vault
+argocd app get vault
+kubectl -n vault get pods
+kubectl -n vault port-forward svc/vault-ui 8200:8200
+```
+
+http://localhost:8200
+
+
